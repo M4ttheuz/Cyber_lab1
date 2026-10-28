@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<h2>Zalogowano jako: @User.Identity?.Name (Rola: @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value)</h2>
+
+@if (TempData["Msg"] != null)
+{
+    <p style="color: green; font-weight: bold;">@TempData["Msg"]</p>
+}
+
+<hr />
+<h3>Menu użytkownika:</h3>
+<ul>
+    <li><a asp-controller="Account" asp-action="ChangePassword">Zmień własne hasło</a></li>
+    <li><a asp-controller="Account" asp-action="Logout">Wyloguj się</a></li>
+</ul>
+
+<hr />
+<h3>Testowanie uprawnień ról (RBAC):</h3>
+<ul>
+    <li><a asp-controller="Admin" asp-action="Index">Panel administratora (administrator)</a></li>
+    <li><a asp-controller="Home" asp-action="ZatwierdzRaport">Zatwierdź raport (kierownik)</a></li>
+    <li><a asp-controller="Home" asp-action="EdytujArtykul">Edytuj artykuł (kierownik i redaktor)</a></li>
+    <li><a asp-controller="Home" asp-action="DodajNotatke">Dodaj notatkę (kierownik, redaktor, pracownik)</a></li>
+    <li><a asp-controller="Home" asp-action="CzytajArtykuly">Czytaj artykuły (wszyscy zalogowani)</a></li>
+</ul>

@@ -1,0 +1,7 @@
+﻿@{
+    ViewData["Title"] = "Brak dostępu (403)";
+}
+
+<h2 style="color: red;">Błąd 403 - brak uprawnień</h2>
+<p>Twoja rola (@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value) nie ma dostępu do tego zasobu.</p>
+<a asp-controller="Home" asp-action="Index">Powrót na stronę główną</a>

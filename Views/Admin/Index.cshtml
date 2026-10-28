@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Cyber_lab1.Models.User>
+@{
+    ViewData["Title"] = "Panel Administratora";
+    var settings = (Cyber_lab1.Models.SystemSettings)ViewBag.Settings;
+    var words = (List<Cyber_lab1.Models.ForbiddenWord>)ViewBag.Words;
+    string[] roles = { "Administrator", "Kierownik", "Redaktor", "Pracownik", "Czytelnik" };
+}
+
+<h2>Panel Administratora</h2>
+<p><a asp-controller="Home" asp-action="Index">Powrót na stronę główną</a></p>
+
+@if (TempData["OtpMsg"] != null)
+{
+    <div style="border: 2px solid green; padding: 10px; background: #eaffea; margin-bottom: 15px;">
+        <strong>@TempData["OtpMsg"]</strong>
+    </div>
+}
+
+<hr />
+<h3>1. Dodaj nowego użytkownika (wygeneruje hasło jednorazowe OTP)</h3>
+<form method="post" asp-action="CreateUser">
+    Login: <input type="text" name="username" required />
+    Rola:
+    <select name="role">
+        @foreach (var r in roles)
+        {
+            <option value="@r">@r</option>
+        }
+    </select>
+    <button type="submit">Utwórz konto</button>
+</form>
+
+<hr />
+<h3>2. Lista użytkowników</h3>
+<table border="1" cellpadding="6" style="border-collapse: collapse;">
+    <tr>
+        <th>ID</th>
+        <th>Login</th>
+        <th>Rola</th>
+        <th>Zablokowany?</th>
+        <th>Akcje</th>
+    </tr>
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.Id</td>
+            <td>@u.Username</td>
+            <td>
+                @if (u.Username != "ADMIN")
+                {
+                    <form method="post" asp-action="ChangeRole" style="display:inline;">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <select name="role">
+                            @foreach (var r in roles)
+                            {
+                                <option value="@r" selected="@(u.Role == r)">@r</option>
+                            }
+                        </select>
+                        <button type="submit">Zmień</button>
+                    </form>
+                }
+                else
+                {
+                    <strong>@u.Role (stałe)</strong>
+                }
+            </td>
+            <td>@(u.IsBlocked ? "TAK" : "NIE")</td>
+            <td>
+                <form method="post" asp-action="ResetPassword" style="display:inline;">
+                    <input type="hidden" name="id" value="@u.Id" />
+                    <button type="submit">Resetuj hasło (OTP)</button>
+                </form>
+
+                @if (u.Username != "ADMIN")
+                {
+                    <form method="post" asp-action="ToggleBlock" style="display:inline;">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <button type="submit">@(u.IsBlocked ? "Odblokuj" : "Zablokuj")</button>
+                    </form>
+
+                    <form method="post" asp-action="DeleteUser" style="display:inline;">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <button type="submit" style="color:red;">Usuń</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+<hr />
+<h3>3. Polityka haseł i ustawienia sesji</h3>
+<form method="post" asp-action="UpdateSettings">
+    <div>
+        Minimalna długość hasła:
+        <input type="number" name="minLen" value="@settings.MinPasswordLength" min="1" required />
+    </div>
+    <div style="margin-top: 5px;">
+        Włącz sprawdzanie słownika słów zakazanych:
+        <input type="checkbox" name="enforceWords" value="true" checked="@settings.EnforceForbiddenWords" />
+    </div>
+    <div style="margin-top: 5px;">
+        Ważność hasła (w dniach):
+        <input type="number" name="validityDays" value="@settings.PasswordValidityDays" min="1" required />
+    </div>
+    <div style="margin-top: 5px;">
+        Czas bezczynności sesji (w minutach):
+        <input type="number" name="sessionMinutes" value="@settings.SessionTimeoutMinutes" min="1" required />
+    </div>
+    <button type="submit" style="margin-top: 10px;">Zapisz ustawienia</button>
+</form>
+
+<hr />
+<h3>4. Słownik słów zakazanych</h3>
+<form method="post" asp-action="AddWord" style="margin-bottom: 10px;">
+    Nowe słowo zakazane: <input type="text" name="word" required />
+    <button type="submit">Dodaj do słownika</button>
+</form>
+
+<ul>
+    @foreach (var w in words)
+    {
+        <li>
+            <strong>@w.Word</strong>
+            <form method="post" asp-action="DeleteWord" style="display:inline; margin-left: 10px;">
+                <input type="hidden" name="id" value="@w.Id" />
+                <button type="submit">Usuń</button>
+            </form>
+        </li>
+    }
+</ul>
