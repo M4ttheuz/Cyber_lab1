@@ -94,13 +94,14 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateSettings(int minLen, bool enforceWords, int validityDays, int sessionMinutes)
+    public async Task<IActionResult> UpdateSettings(int minLen, bool enforceWords, int validityDays, int sessionMinutes, int maxAttempts)
     {
         var s = await _db.Settings.FirstAsync();
         s.MinPasswordLength = minLen;
         s.EnforceForbiddenWords = enforceWords;
         s.PasswordValidityDays = validityDays;
         s.SessionTimeoutMinutes = sessionMinutes;
+        s.MaxFailedAttempts = maxAttempts;
         await _db.SaveChangesAsync();
         return RedirectToAction("Index");
     }

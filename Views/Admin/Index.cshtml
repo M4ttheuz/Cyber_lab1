@@ -107,6 +107,10 @@
         Czas bezczynności sesji (w minutach):
         <input type="number" name="sessionMinutes" value="@settings.SessionTimeoutMinutes" min="1" required />
     </div>
+    <div style="margin-top: 5px;">
+        Limit błędnych logowań (blokada na 15 min):
+        <input type="number" name="maxAttempts" value="@settings.MaxFailedAttempts" min="1" required />
+    </div>
     <button type="submit" style="margin-top: 10px;">Zapisz ustawienia</button>
 </form>
 

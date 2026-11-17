@@ -14,6 +14,8 @@ public class User
 
     public bool IsOtp { get; set; } = false;
     public DateTime? OtpExpiresAt { get; set; }
+    public int FailedLoginAttempts { get; set; } = 0;
+    public DateTime? LockoutEnd { get; set; }
 }
 
 public class PasswordHistory
@@ -36,4 +38,5 @@ public class SystemSettings
     public bool EnforceForbiddenWords { get; set; } = true;
     public int PasswordValidityDays { get; set; } = 30;
     public int SessionTimeoutMinutes { get; set; } = 15;
+    public int MaxFailedAttempts { get; set; } = 3;
 }

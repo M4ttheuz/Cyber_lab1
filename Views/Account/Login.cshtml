@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Logowanie";
+    var words = ViewBag.CaptchaWords as List<string> ?? new List<string>();
 }
 
 <h2>Logowanie</h2>
@@ -18,6 +19,20 @@
         <label>Hasło:</label><br />
         <input type="password" name="password" required />
     </div>
+
+    <div style="display: none;" aria-hidden="true">
+        <label>Strona WWW (zostaw puste):</label>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div style="margin-top: 15px; padding: 10px; border: 1px solid #ccc; max-width: 350px;">
+        <label><strong>CAPTCHA (ważna 2 min):</strong> Które słowo nie pasuje do reszty?</label><br />
+        <p id="captcha-words" style="font-size: 1.1em; margin: 5px 0;">
+            <strong>@string.Join(", ", words)</strong>
+        </p>
+        <input type="text" name="captchaAnswer" placeholder="Wpisz słowo..." required />
+    </div>
+
     <div style="margin-top: 15px;">
         <button type="submit">Zaloguj</button>
     </div>
